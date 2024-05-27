@@ -76,14 +76,14 @@ const tablaProductos = document.getElementById('tabla-productos');
 function renderizarTablaProductos() {
   tablaProductos.innerHTML = '';
 
-  ProductList.forEach(producto => {
+  ProductList.forEach((producto, index) => {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${producto.nombre}</td>
       <td>${producto.marca}</td>
       <td>${producto.cantidad}</td>
       <td>${producto.descripcion}</td>
-      <td><button class="btn btn-primary" data-toggle="modal" data-target="#modalDetalles">Agregar detalles</button></td>
+      <td><button class="btn btn-primary" data-toggle="modal" data-target="#modalDetalles" id="agregarDetalles">Agregar detalles</button></td>
     `;
     tablaProductos.appendChild(row);
   });
@@ -93,30 +93,40 @@ function renderizarTablaProductos() {
 btnAgregarProducto.addEventListener('click', renderizarTablaProductos);
 btnAgregarProducto.addEventListener('click', actualizarResumen);
 
-// Obtiene los elementos del modal de detalles
-const modalDetalles = document.getElementById('modalDetalles');
-const colorProductoInput = document.getElementById('colorProducto');
-const dimensionesProductoInput = document.getElementById('dimensionesProducto');
-const materialProductoInput = document.getElementById('materialProducto');
+// Obtiene el nombre del producto al pulsar el botón de agregar detalles
+
+const btnAgregarDetalles = document.getElementById('agregarDetalles');
+
 const btnGuardarDetalles = document.getElementById('guardarDetalles');
-
-
 // Función para guardar los detalles del producto
 function guardarDetallesProducto() {
-  const color = colorProductoInput.value;
-  const dimensiones = dimensionesProductoInput.value;
-  const material = materialProductoInput.value;
+  const color = colorProducto.value;
+  const dimensiones = dimensionesProducto.value;
+  const material = materialProducto.value;
 
-  // Aquí puedes guardar los detalles del producto en alguna estructura de datos
-  // o enviarlos al servidor, según tus necesidades.
+  console.log('Color:', color);
+  console.log('Dimensiones:', dimensiones);
+  console.log('Material:', material);
+
+  const producto = ProductList[ProductList.length - 1];
+
+  producto.color = color;
+  producto.dimensiones = dimensiones;
+  producto.material = material;
 
   // Limpia los campos del modal
-  colorProductoInput.value = '';
-  dimensionesProductoInput.value = '';
-  materialProductoInput.value = '';
+  colorProducto.value = '';
+  dimensionesProducto.value = '';
+  materialProducto.value = '';
 
   // Cierra el modal
   $('#modalDetalles').modal('hide');
+
+  ProductList.forEach(producto => {
+    console.log('Producto:', producto);
+  });
+
+  actualizarResumen();
 }
 
 // Evento para guardar los detalles del producto
@@ -181,12 +191,6 @@ function generarIdCotizacion() {
 
 // Función para guardar los datos de la cotización en la base de datos
 function guardarCotizacion() {
-/*   const empresa = `
-    Nombre: ${nombreInput.value}
-    Correo: ${correoInput.value}
-    Teléfono: ${telefonoInput.value}
-  `; */
-
   const empresa = {
     nombre: nombreInput.value,
     correo: correoInput.value,

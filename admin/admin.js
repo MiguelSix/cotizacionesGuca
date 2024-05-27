@@ -54,7 +54,7 @@ function llenarTablaCotizaciones(cotizaciones) {
 
         const accionesCell = document.createElement('td');
         const detallesButton = document.createElement('a');
-        detallesButton.href = `detalles.php?id=${cotizacion.id_cotizacion}`;
+        detallesButton.href = `detalles.html?id=${cotizacion.id_cotizacion}`;
         detallesButton.textContent = 'Ver detalles';
         detallesButton.classList.add('btn', 'btn-primary');
         accionesCell.appendChild(detallesButton);
