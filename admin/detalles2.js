@@ -73,13 +73,11 @@ function generarPresupuesto() {
         if (response.ok) {
             response.blob().then(blob => {
                 const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'presupuesto.pdf';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
+                const printWindow = window.open(url, '_blank');
+                printWindow.onload = function() {
+                    printWindow.print();
+                    window.URL.revokeObjectURL(url);
+                };
             });
         } else {
             console.error('Error al generar el presupuesto');
