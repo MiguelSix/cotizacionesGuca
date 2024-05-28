@@ -1,5 +1,8 @@
 const urlParams = new URLSearchParams(window.location.search);
 const idCotizacion = urlParams.get('id');
+const generarPresupuestoBtn = document.getElementById('generarPresupuestoBtn');
+
+generarPresupuestoBtn.addEventListener('click', generarPresupuesto);
 
 function obtenerDetallesCotizacion() {
     fetch(`detalles.php?id=${idCotizacion}`)
@@ -18,10 +21,12 @@ function mostrarDetallesCotizacion(cotizacion) {
     const empresaTelefonoElement = document.getElementById('empresaTelefono');
     const empresaCorreoElement = document.getElementById('empresaCorreo');
     const productosContainer = document.getElementById('productosContainer');
+    const cotizacionIdElement = document.getElementById('cotizacionId');
 
     empresaNombreElement.textContent = `Nombre: ${cotizacion.empresa.nombre}`;
     empresaTelefonoElement.textContent = `Teléfono: ${cotizacion.empresa.telefono}`;
     empresaCorreoElement.textContent = `Correo: ${cotizacion.empresa.correo}`;
+    cotizacionIdElement.textContent = `ID de la cotización: ${idCotizacion}`;
 
     productosContainer.innerHTML = cotizacion.productos.map(producto => `
     <div class="card mb-4">
@@ -46,8 +51,8 @@ function mostrarDetallesCotizacion(cotizacion) {
     `).join('');
 }
 
-/* function generarPresupuesto() {
-    const comentarios = document.getElementById('comentarios').value;
+function generarPresupuesto() {
+    const comentarios = Array.from(document.querySelectorAll('textarea')).map(textarea => textarea.value);
     const precios = Array.from(document.querySelectorAll('input[type="number"]')).map(input => ({
         idProducto: input.id.split('-')[1],
         precio: input.value
@@ -64,13 +69,25 @@ function mostrarDetallesCotizacion(cotizacion) {
             precios
         })
     })
-    .then(response => response.text())
-    .then(data => {
-        console.log(data);
+    .then(response => {
+        if (response.ok) {
+            response.blob().then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'presupuesto.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+        } else {
+            console.error('Error al generar el presupuesto');
+        }
     })
     .catch(error => {
         console.error('Error al generar el presupuesto:', error);
     });
-} */
+}
 
 obtenerDetallesCotizacion();
